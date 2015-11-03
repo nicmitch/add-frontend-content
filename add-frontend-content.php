@@ -34,14 +34,6 @@ function afec_add_form_func( $atts ) {
 
     $postTitleError = '';
  
-	if ( isset( $_POST['submitted'] ) ) {
-	 
-	    if ( trim( $_POST['postTitle'] ) === '' ) {
-	        $postTitleError = 'Please enter a title.';
-	        $hasError = true;
-	    }
-	 
-	}
 
     $output = "";
     $output .= "<form action=\"\" id=\"primaryPostForm\" method=\"POST\">";
@@ -111,6 +103,8 @@ function afec_check_form_func(){
 	 	
 	    $post_id = wp_insert_post( $post_information );
 	    
+	    __update_post_meta( $post_id, 'caccole', 'prova' );
+
 		if ( $post_id ) {
 		    wp_redirect( home_url() );
 		    exit;
@@ -120,3 +114,20 @@ function afec_check_form_func(){
 
 }
 add_action('wp_head', 'afec_check_form_func');
+
+
+
+function __update_post_meta( $post_id, $field_name, $value = '' ){
+    if ( empty( $value ) OR ! $value )
+    {
+        delete_post_meta( $post_id, $field_name );
+    }
+    elseif ( ! get_post_meta( $post_id, $field_name ) )
+    {
+        add_post_meta( $post_id, $field_name, $value );
+    }
+    else
+    {
+        update_post_meta( $post_id, $field_name, $value );
+    }
+}
